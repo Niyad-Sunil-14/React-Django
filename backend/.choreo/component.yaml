@@ -1,8 +1,31 @@
-version: 0.1
+# This file should be located at .choreo/component.yaml inside the directory you specified
+# as the "Project Directory" in Choreo. In your case, it's `backend/.choreo/component.yaml`.
 
-endpoints: 
-  - name: "REST API"
-    port: 8000
-    type: REST
-    networkVisibility: Public
-    context: /
+apiVersion: v1alpha1
+kind: Component
+metadata:
+  # This should be the name of your component in the Choreo console.
+  name: backend
+spec:
+  # Specifies that this component is a long-running service.
+  type: Service
+
+  build:
+    # The build configuration is mostly handled by the UI settings (like Project Directory)
+    # and Choreo's buildpacks, which will automatically detect your Procfile and requirements.txt.
+    # We just need to specify the branch you are deploying from.
+    branch: main # <-- IMPORTANT: Change this if your branch is not 'main' (e.g., 'master')
+
+  # This section defines how your service is exposed to the internet.
+  inbound:
+    - name: "rest-api" # A unique name for your API endpoint.
+      # This is the port your application listens on. It must match the port in your run command.
+      # Gunicorn and Uvicorn default to 8000, so this is correct.
+      port: 8000
+      # The type of the endpoint. REST is correct for a Django API.
+      type: REST
+      # This makes the endpoint accessible from the public internet.
+      networkVisibility: Public
+      # This is the base path for your API. A single slash means it will be available
+      # at the root of your service URL (e.g., https://<...>.choreoapps.dev/).
+      context: /
